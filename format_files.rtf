@@ -1,0 +1,125 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf460
+{\fonttbl\f0\fnil\fcharset0 PTMono-Bold;\f1\fnil\fcharset0 PTMono-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red0\green1\blue120;
+\red107\green0\blue2;\red242\green242\blue242;\red83\green83\blue83;\red26\green26\blue26;\red168\green24\blue75;
+\red17\green0\blue95;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b\fs26 \cf2 \cb3 \expnd0\expndtw0\kerning0
+1. Download a html file from the internet and change to xml file:\'a0
+\f1\b0 \
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 \
+for x in *.utf8; do\
+\'a0 mv -- "$x" "$x.xml" \'a0 \
+done\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+2 Convert to utf8:
+\f1\b0 \
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 \
+Change encoding of file\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for file in *.xml; do\
+\'a0\'a0\'a0\'a0 iconv -f gb2312 -t UTF-8 $file > $file.utf8\
+done\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+3. If necessary, and file garbled, add in BOM:
+\f1\b0 \
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 (printf "\\357\\273\\277";cat File1) > File2\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for file in *.xml; do\
+\'a0(printf "\\357\\273\\277";cat $file) > $file.new; done\
+\
+4. Then change the filename to xml ( although may be necessary to do before the BOM)\
+\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for x in *.utf8; do\
+\'a0 mv -- "$x" "$x.xml"\'a0 \
+done\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+5. Strip file of html\'a0tags
+\f1\b0 \
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for file in *.xml; do sed 's/<[^>]*>//g' $file > $file.new; done\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+6. Add the id line FIRST:
+\f1\b0 \
+\
+*** It will say it doesn\'92t recognise it but it puts it in anyways\'a0\
+\
+***PUT UNIQUE WORD IN ID BESIDE VARIABLE\
+\
+newVar=1\
+\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for file in *.xml; do\
+\'a0echo "<field name='id'>$newVar</field>" | cat - $file > temp && mv temp $file; newVar=$(($newVar + 1 )); done\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+7. Add <add> <doc> 
+\f1\b0 \
+\
+for file in *.xml; do\
+echo "<add><doc>" | cat - $file > temp && mv temp $file; done\
+\
+
+\f0\b \
+8. Add </field></doc></add>
+\f1\b0 \
+\
+for file in *.xml; do\
+echo "</field></doc></add> ">> $file; done\
+\
+
+\f0\b \
+9. Add in the text field tag to the third line:
+\f1\b0 \
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 for file in *.xml; do\
+\'a0sed -e '3s/$/<field name="text">/' $file > $file.new\
+\'a0done\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f0\b \cf2 \
+10. Change file names to numbers\'a0
+\f1\b0 \
+\
+\cf9 **** don\'92t have a space between\'92cnt\'92 and the equals sign or it will delete all files ***\cf2 \
+\
+\
+\pard\pardeftab720\sl300\partightenfactor0
+\cf2 cd ./directory\
+cnt=1\
+for fname in *\
+do\
+\'a0\'a0\'a0 mv $fname file$\{cnt\}.avi\
+\'a0\'a0\'a0 cnt=$(( $cnt + 1 )) \'a0\
+\
+done\
+\
+}
